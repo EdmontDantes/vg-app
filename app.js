@@ -1,24 +1,48 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+const createError = require('http-errors');
+const express = require('express');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const morgan = require('morgan');
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+//non-standard packages apart from express-generator
+const mongoose = require('mongoose');
+const flash = require('connect-flash');
+const session = require('express-session');
+const passport = require('passport');
+let MongoStore = require('connect-mongo')(session);
 
-var app = express();
+// bring dotenv for usage here
+require('dotenv').config();
+
+// bring models here
+
+
+// bring routes files here
+const indexRouter = require('./routes/index');
+const usersRouter = require('./routes/users');
+
+const app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
-app.use(logger('dev'));
+
+// morgan package for development only can be deleted for production
+app.use(morgan('dev'));
+
+// express json translator
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+
+// cookie parser usage here
 app.use(cookieParser());
+
+// use path to make use of public folder for static files access in the app
 app.use(express.static(path.join(__dirname, 'public')));
 
+
+// declare base paths
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 

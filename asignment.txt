@@ -1,0 +1,98 @@
+VG App
+Name your app vg-app
+Use express-generator
+MVC
+RestAPI guidelines
+Use meaningful names for all folders, files, and endpoints.
+Give proper base paths for routes as well
+Validate all inputs
+Flash errors
+EJS
+CSS Framework permitted
+** Make sure to name your variables. No x's and y's....
+
+
+---
+Create a module to seed your database by calling it with the node command.
+Seed db with a json file of 4 or more games
+
+
+---
+Game model should at minimum have: (will probably need more fields)
+Title
+Description
+Year Released
+Playtime
+Image
+Timestamp
+
+
+---
+User Model should at minimum have:(will probably need more fields)
+Name
+Username
+Email
+Password
+Timestamp
+
+
+---
+Create a combined Login/Register page.
+
+
+---
+Use passport for backend login authentication
+Login fields:
+username, password
+Register fields:
+name, username, email, password, admin secret
+
+
+---
+When the user registers, if the input for the admin secret matches the admin secret you've created somewhere, the user should be set as an admin
+
+
+---
+Logged In Landing Page:
+Show Cards with all the video games listing a poster image for each game and title for each.
+
+
+---
+When you click on the title on the Landing Page, it goes to a page that shows the info for a single game. Show all the info from the model including poster image here. Design the info nicely. Also add a favorite and unfavorite anchor or button. Favorite anchor adds to the users favorite games. Unfavorite anchor removes from the users favorites.
+When favorite or unfavorite is clicked. Flash that the game has been added to favorites, or the game has been removed from favorites
+If the user is an admin
+show anchor tag to delete the movie in each movie card.
+
+
+---
+Logged in Landing Page:
+If user is an admin
+there should be an anchor tag or button to create a game somewhere on the landing page
+Anchor tag or button to create a game navigates to a page with a form to add movie
+
+
+---
+Add game page:
+When clicking add Movie anchor or button it should navigate back to landing page with added movie at the beginning of the page.
+Input Fields:
+Title
+Description
+Year Released
+Playtime
+Image
+
+
+---
+Image field should take a uri string that navigates to an online poster of the game.
+
+
+---
+Logged in Landing Page should have an anchor or button to navigate to users favorites
+When clicked it navigates to a favorites page with cards listing the users favorites, (no repeats)
+just title and image for each
+Favorites Page has a back button to go back to Landing page.
+
+
+---
+Logout button and user name should be on each page after user is authenticated
+---

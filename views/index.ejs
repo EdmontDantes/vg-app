@@ -1,11 +1,60 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title><%= title %></title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
-  </head>
-  <body>
-    <h1><%= title %></h1>
-    <p>Welcome to <%= title %></p>
-  </body>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Video Game App Login/Register</title>
+  <link href="./stylesheets/bootstrap.min.css" rel="stylesheet">
+  <link href="./stylesheets/styleLoginRegister.css" rel="stylesheet">
+</head>
+<body>
+  <div class="container login-container">
+    <h1>Video Games App</h1>
+    <div class="row">
+        <div class="col-md-6 login-form-1">
+            <h3>Login</h3>
+            <form class="form-group" action="/users/login" METHOD="POST">
+                <div class="form-group">
+                    <input type="text" class="form-control" placeholder="Your User Name" value="" name="userName" />
+                </div>
+                <div class="form-group">
+                    <input type="password" class="form-control" placeholder="Your Password" value="" name="password" />
+                </div>
+                <div class="form-group">
+                    <input type="submit" class="btnSubmit" value="Login" />
+                </div>
+            </form>
+        </div>
+        <div class="col-md-6 login-form-2">
+
+            <h3>Register</h3>
+            <form class="form-group" action="/users/login" METHOD="POST">
+                <div class="form-group">
+                    <input type="text" class="form-control" placeholder="Input Name required" value="" name="name" />
+                </div>
+                <div class="form-group">
+                  <input type="text" class="form-control" placeholder="Input User Name required" value="" name="userName" />
+              </div>
+              <div class="form-group">
+                <input type="email" class="form-control" placeholder="Input Email required" value="" name="email" />
+              </div>
+                <div class="form-group">
+                    <input type="password" class="form-control" placeholder="Input Password required" value="" name="password" />
+                </div>
+                <div class="form-group">
+                  <input type="password" class="form-control" placeholder="If You Have Admin Secret Input Here" value="" name="adminSecret" />
+                </div>
+                <div class="form-group">
+                    <input type="submit" class="btnSubmit" value="Login" />
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script src="./javascripts/bootstrap.min.js"></script>
+<script src="./javascripts/jquery-3.2.1.slim.min.js"></script>
+</body>
 </html>
+
+
+
