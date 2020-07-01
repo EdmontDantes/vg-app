@@ -7,6 +7,23 @@
   <link href="../stylesheets/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
+  <nav id="navbar-example2" class="navbar navbar-light bg-light">
+    <a class="navbar-brand" href="/users/logged">Home</a>
+    <ul class="nav nav-pills">
+      <li class="nav-item">
+        <% if (user.userName) { %>
+          <p class="nav-link" href="#">Hello <%- user.userName %> </p>
+         
+        <% } %>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/users/logout">Log Out</a>
+      </li>
+    </ul>
+  </nav>
+<br />
+<br />
+  </div>
     <div class="card-columns">
         <div class="card">
           <img class="card-img-top" src=".../100px160/" alt="Card image cap">
@@ -71,5 +88,6 @@
           </div>
         </div>
       </div>
+      <% include ../partials/scripts.ejs %>>
 </body>
 </html>

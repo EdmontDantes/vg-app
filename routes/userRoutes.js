@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const User = require('./users/models/Users');
+const Game = require('../routes/games/models/Games');
 const passport = require('passport');
 const bcrypt = require('bcryptjs');
 
@@ -79,14 +80,24 @@ router.post('/login', loginCheck, loginValidate , passport.authenticate('local-l
     }
   });
 
-router.get('/logged', (req, res) => {
-  if(req.isAuthenticated()) {
+router.get('/logged', async (req, res, next) => {
+  try {
+    if(req.isAuthenticated()) {
+      let games = await Game.find({});
+      return res.render('main/logged', { games });
   
-      res.render('main/logged');
-  
-  } else {
+    } else {
           return res.send('You are not authorized to view this page');
-      }
-  })
+    }
+  } catch(err){
+    return res.status(500).json({ message: 'failed', error });
+  }}
+)
 
+  router.get('/logout',(req,res)=>{
+    req.logout();
+    
+    req.session.destroy()
+    return res.redirect('/')
+  })
 module.exports = router;

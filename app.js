@@ -75,6 +75,14 @@ app.use(passport.session());
 // use path to make use of public folder for static files access in the app
 app.use(express.static(path.join(__dirname, 'public')));
 
+// declare the local variables values
+
+app.use((req,res,next)=>{
+  res.locals.user = req.user;
+  res.locals.game = req.game;
+  res.locals.errors = req.flash;
+  next()
+});
 
 // declare base paths
 app.use('/', indexRouter);
