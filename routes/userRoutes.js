@@ -84,7 +84,8 @@ router.get('/logged', async (req, res, next) => {
   try {
     if(req.isAuthenticated()) {
       let games = await Game.find({});
-      return res.render('main/logged', { games });
+      let findOutIfUserIsAdmin = req.user.admin;
+      return res.render('main/logged', { games, findOutIfUserIsAdmin });
   
     } else {
           return res.send('You are not authorized to view this page');
@@ -94,10 +95,94 @@ router.get('/logged', async (req, res, next) => {
   }}
 )
 
-  router.get('/logout',(req,res)=>{
+router.get('/logout',(req,res)=>{
     req.logout();
     
     req.session.destroy()
     return res.redirect('/')
+  });
+
+router.post('/make-favorite/:title', (req, res) => {
+  let requestedId = req.params.title
+  let favouritesGameInUser = User.games
+  let sessionUserId = req.user._id
+  Game.findOne({ title: req.params.title }).then((foundGame) => {
+    // console.log('I have found the game via the title', foundGame)
+    // console.log('current user in session logged in', req.user);
+
+    if(!foundGame) {
+    
+      req.flash('errors', 'Sorry We cant find a game you requested to make it favorite');
+      return res.redirect('/users/logged');
+    
+    } else if (foundGame) {
+      
+      User.findOne({ _id: sessionUserId}).then((foundCurrUser) => {
+        // console.log(FoundCurrUser)
+        for(let i = 0; i < foundCurrUser.favoriteGames.length; i++) {
+          if(!foundCurrUser.favoriteGames[i]._id) {
+
+            foundCurrUser.favoriteGames.push(foundGame._id);
+            foundCurrUser.save().then((savedUserWFavID) =>{
+              
+              req.flash('success', 'We have added the game to your favorites');
+              return res.redirect('/users/logged');
+    
+            }).catch(err => console.log(err));
+          
+          } else {
+            req.flash('errors', 'We have Already added the game to your favorites, No need to do so again');
+            return res.redirect('/users/logged');
+          }
+        
+        }
+      }).catch(err => console.log(err));
+    }
+  }).catch((err) => {
+    res.status(500).json({ message: 'Making a requested game favorite failed' });
   })
+})
+
+router.post('/un-make-favorite/:title', (req, res) => {
+  let sessionUserId = req.user._id
+  Game.findOne({ title: req.params.title }).then((foundGame) => {
+    // console.log('I have found the game via the title', foundGame)
+    // console.log('current user in session logged in', req.user);
+
+    if(!foundGame) {
+    
+      req.flash('errors', 'Sorry We cant find a game you requested to Un-make it favorite');
+      return res.redirect('/users/logged');
+    
+    } else if (foundGame) {
+      
+      User.findOne({ _id: sessionUserId}).then((foundCurrUser) => {
+        // console.log(FoundCurrUser)
+        let arrayOfFavGamesInUser = foundCurrUser.favoriteGames
+
+          if(arrayOfFavGamesInUser.includes(foundGame._id)) {
+            let indexNeeded = arrayOfFavGamesInUser.indexOf(foundGame._id)
+            arrayOfFavGamesInUser.splice(indexNeeded, 1);
+            foundCurrUser.save().then((savedUserWRemovedFavID) =>{
+              console.log(savedUserWRemovedFavID)
+              req.flash('success', 'We have removed the game from your favorites');
+              return res.redirect('/users/logged');
+    
+            }).catch(err => console.log(err));
+          
+          } else {
+            req.flash('errors', 'We have Already removed the game from your favorites, No need to do so again');
+            return res.redirect('/users/logged');
+          }
+        
+        }
+      ).catch(err => console.log(err));
+    }
+  }).catch((err) => {
+    res.status(500).json({ message: 'UN-Making a requested game favorite failed' });
+  })
+})
+
+
+
 module.exports = router;

@@ -13,6 +13,9 @@
     <div class="row">
         <div class="col-md-6 login-form-1">
             <h3>Login</h3>
+            <% if (errors) { %>
+                <h5><%- errors %></h5>
+               <% } %>
             <form class="form-group" action="/users/login" METHOD="POST">
                 <div class="form-group">
                     <input type="text" class="form-control" placeholder="Your User Name" value="" name="userName" />
@@ -28,6 +31,12 @@
         <div class="col-md-6 login-form-2">
 
             <h3>Register</h3>
+            <% if (errors) { %>
+             <h5><%- errors %></h5>
+            <% } %>
+            <% if (success) { %>
+                <h5><%- success %></h5>
+               <% } %>
             <form class="form-group" action="/users/register" METHOD="POST">
                 <div class="form-group">
                     <input type="text" class="form-control" placeholder="Input Name required" value="" name="name" />
@@ -45,13 +54,13 @@
                   <input type="password" class="form-control" placeholder="If You Have Admin Secret Input Here" value="" name="adminSecret" />
                 </div>
                 <div class="form-group">
-                    <input type="submit" class="btnSubmit" value="Login" />
+                    <input type="submit" class="btnSubmit" value="Register" />
                 </div>
             </form>
         </div>
     </div>
 </div>
-<% include ../partials/scripts.ejs %>>
+<% include ../partials/scripts.ejs %>
 </body>
 </html>
 

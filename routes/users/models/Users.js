@@ -9,10 +9,7 @@ const UserSchema = new mongoose.Schema({
     password: { type: String, required: true, min: 3 },
     admin: {type: Boolean, default: false},
     timestamp: { type: String, default: () => moment().format('dddd, MMMM do YYYY, h:mm a') },
-    games: [{ 
-        favorite: {type: Boolean, default: false },
-        reference:{ type: Schema.Types.ObjectId, ref: 'game' }
-        }]
+    favoriteGames:[{ type: Schema.Types.ObjectId, ref: 'game' }]
 });
 
 module.exports = mongoose.model('user', UserSchema);

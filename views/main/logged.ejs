@@ -9,12 +9,21 @@
 <body>
   <nav id="navbar-example2" class="navbar navbar-light bg-light">
     <a class="navbar-brand" href="/users/logged">Home</a>
+    <% if (success) { %>
+      <p class="navbar-brand"><%- success %></p>
+    <% } %>
+    <% if (errors) { %>
+      <p class="navbar-brand"><%- errors %></p>
+    <% } %>
     <ul class="nav nav-pills">
       <li class="nav-item">
         <% if (user.userName) { %>
           <p class="nav-link" href="#">Hello <%- user.userName %> </p>
-         
+        
         <% } %>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/users/favorites-list">Favorites List</a>
       </li>
       <li class="nav-item">
         <a class="nav-link" href="/users/logout">Log Out</a>
@@ -29,9 +38,21 @@
         <div class="card" style="width: 18rem;">
           <img class="card-img-top" src="<%- game.image %> " alt="Card image cap">
           <div class="card-body">
-            <h5 class="card-title"><%- game.title %></h5>
-            <p class="card-text"><%- game.description %></p>
-            <a href="#" class="btn btn-primary">Go somewhere</a>
+            <h5 class="card-title">Title: <%- game.title %></h5>
+            <p class="card-text">Description: <%- game.description %></p>
+            <p class="card-text">yearReleased: <%- game.yearReleased %></p>
+            <p class="card-text">playTime: <%- game.playTime %></p>
+            <form class="card-group" action="/users/make-favorite/<%-game.title %>" METHOD="POST">
+            <button type="submit" class="btn btn-primary">Favorite</button>
+            </form>
+            <form class="card-group" action="/users/un-make-favorite/<%-game.title %>" METHOD="POST">
+              <button type="submit" class="btn btn-success">Un-Favorite</button>
+            </form>
+            <% if (findOutIfUserIsAdmin) { %>
+              <form class="card-group" action="/users/remove-game/<%-game.title %>" METHOD="POST">
+                <button type="submit" class="btn btn-warning">Delete from DB</button>
+              </form>
+            <% } %>
           </div>
         </div>
       <% }) %>

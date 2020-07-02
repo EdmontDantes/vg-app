@@ -80,12 +80,15 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use((req,res,next)=>{
   res.locals.user = req.user;
   res.locals.game = req.game;
-  res.locals.errors = req.flash;
+  res.locals.errors = req.flash('errors');
+  res.locals.success = req.flash('success');
+  res.locals.info = req.flash('info');
   next()
 });
 
 // declare base paths
 app.use('/', indexRouter);
+
 app.use('/users', usersRouter);
 
 // catch 404 and forward to error handler

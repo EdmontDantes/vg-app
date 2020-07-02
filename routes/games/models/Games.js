@@ -3,7 +3,7 @@ const moment = require('moment');
 
 
 const GameSchema = new mongoose.Schema({
-    title: {type: String, required: true, trim: true},
+    title: {type: String, required: true, trim: true, unique: true},
     description: {type: String, lowercase: true, trim: true},
     yearReleased: {type: Number},
     playTime: {type: Number},
