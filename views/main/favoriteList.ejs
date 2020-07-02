@@ -3,15 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Video Game App</title>
+  <title>Favorite List</title>
   <link href="../stylesheets/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-<% include ../partials/navbar %>
+<% include ../partials/navbar %> 
   </div>
     <div class="card-columns">
       <% games.forEach((game) => { %>
-        <div class="card" style="width: 18rem;">
+        <div class="card bg-success" style="width: 18rem;">
+            <h2>Favourite</h2>
           <img class="card-img-top" src="<%- game.image %> " alt="Card image cap">
           <div class="card-body">
             <h5 class="card-title">Title: <%- game.title %></h5>

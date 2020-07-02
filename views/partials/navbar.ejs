@@ -1,0 +1,26 @@
+<nav id="navbar-example2" class="navbar navbar-light bg-light">
+    <a class="navbar-brand" href="/users/logged">Home</a>
+    <% if (success) { %>
+      <p class="navbar-brand"><%- success %></p>
+    <% } %>
+    <% if (errors) { %>
+      <p class="navbar-brand"><%- errors %></p>
+    <% } %>
+    <ul class="nav nav-pills">
+      <li class="nav-item">
+        <% if (user.userName) { %>
+          <p class="nav-link" href="#">Hello <%- user.userName %>, <% if(user.admin) { %> 
+            you are admin |  <a href="/users/add-game">Add Game</a>
+            <% } %> </p>
+        <% } %>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/users/favorites-list">Favorites List</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/users/logout">Log Out</a>
+      </li>
+    </ul>
+  </nav>
+<br />
+<br />

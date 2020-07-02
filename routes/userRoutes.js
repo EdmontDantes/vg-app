@@ -95,14 +95,14 @@ router.get('/logged', async (req, res, next) => {
   }}
 )
 
-router.get('/logout',(req,res)=>{
+router.get('/logout', checkAuthentication, (req,res)=>{
     req.logout();
     
     req.session.destroy()
     return res.redirect('/')
   });
 
-router.post('/make-favorite/:title', (req, res) => {
+router.post('/make-favorite/:title', checkAuthentication, (req, res) => {
   let requestedId = req.params.title
   let favouritesGameInUser = User.games
   let sessionUserId = req.user._id
@@ -119,12 +119,12 @@ router.post('/make-favorite/:title', (req, res) => {
       
       User.findOne({ _id: sessionUserId}).then((foundCurrUser) => {
         // console.log(FoundCurrUser)
-        for(let i = 0; i < foundCurrUser.favoriteGames.length; i++) {
-          if(!foundCurrUser.favoriteGames[i]._id) {
+        let arrayOfFavGamesInUser = foundCurrUser.favoriteGames
 
-            foundCurrUser.favoriteGames.push(foundGame._id);
+          if(!arrayOfFavGamesInUser.includes(foundGame._id)) {
+            arrayOfFavGamesInUser.push(foundGame._id);
             foundCurrUser.save().then((savedUserWFavID) =>{
-              
+              console.log(savedUserWFavID)
               req.flash('success', 'We have added the game to your favorites');
               return res.redirect('/users/logged');
     
@@ -136,14 +136,14 @@ router.post('/make-favorite/:title', (req, res) => {
           }
         
         }
-      }).catch(err => console.log(err));
+      ).catch(err => console.log(err));
     }
   }).catch((err) => {
     res.status(500).json({ message: 'Making a requested game favorite failed' });
   })
 })
 
-router.post('/un-make-favorite/:title', (req, res) => {
+router.post('/un-make-favorite/:title', checkAuthentication, (req, res) => {
   let sessionUserId = req.user._id
   Game.findOne({ title: req.params.title }).then((foundGame) => {
     // console.log('I have found the game via the title', foundGame)
@@ -184,5 +184,125 @@ router.post('/un-make-favorite/:title', (req, res) => {
 })
 
 
+router.get('/favorites-list', checkAuthentication, (req, res, next) => {
+  let sessionUserId = req.user._id
+  User.findOne({_id: sessionUserId}).populate('favoriteGames').exec((err, game) => {
+    if(err) return next();
+    let findOutIfUserIsAdmin = req.user.admin;
+    let games = game.favoriteGames;
+    console.log(game);
+    res.render('main/favoriteList', { games, findOutIfUserIsAdmin })
+  })
+})
+
+router.post('/remove-game/:title', checkAuthentication, (req, res, next) => {
+  let sessionUserId = req.user._id
+  // Game.find({ title: req.params.title }).then((foundGame) => {
+  //   // console.log('I have found the game via the title', foundGame)
+  //   // console.log('current user in session logged in', req.user);
+
+  //   if(!foundGame) {
+    
+  //     req.flash('errors', 'The Requested game to be removed is not found');
+  //     return res.redirect('/users/logged');
+    
+  //   } else if (foundGame) {
+      
+  //     User.findOne({ _id: sessionUserId}).then((foundCurrUser) => {
+  //       // console.log(FoundCurrUser)
+  //       let arrayOfFavGamesInUser = foundCurrUser.favoriteGames
+
+  //         if(arrayOfFavGamesInUser.includes(foundGame._id)) {
+  //           let indexNeeded = arrayOfFavGamesInUser.indexOf(foundGame._id)
+  //           arrayOfFavGamesInUser.splice(indexNeeded, 1);
+  //           foundCurrUser.save().then((savedUserWRemovedFavID) =>{
+  //             console.log(savedUserWRemovedFavID)
+  //             req.flash('success', 'We have removed the game from your favorites');
+
+    
+  //           }).catch(err => console.log(err));
+          
+  //         } else {
+  //           req.flash('errors', 'We have Already removed the game from your favorites, No need to do so again');
+
+  //         }
+        
+  //       }).catch(err => console.log(err));
+  //   }
+  // }).catch((err) => {
+  //   res.status(500).json({ message: 'Delete Game went awry' });
+  // });
+
+  Game.findOneAndRemove({ title: req.params.title }).then((foundGame) => {
+    console.log('whateverLeft:', foundGame);
+    if(!foundGame) {
+    
+      req.flash('errors', 'The Requested game to be removed is not found');
+      return res.redirect('/users/logged');
+    
+    } else if (foundGame) {
+      
+      User.findOne({ _id: sessionUserId}).then((foundCurrUser) => {
+        // console.log(FoundCurrUser)
+        let arrayOfFavGamesInUser = foundCurrUser.favoriteGames
+
+          if(arrayOfFavGamesInUser.includes(foundGame._id)) {
+            let indexNeeded = arrayOfFavGamesInUser.indexOf(foundGame._id)
+            arrayOfFavGamesInUser.splice(indexNeeded, 1);
+            foundCurrUser.save().then((savedUserWRemovedFavID) =>{
+              console.log(savedUserWRemovedFavID)
+              req.flash('success', 'We have removed the game from your favorites');
+              next();
+    
+            }).catch(err => console.log(err));
+          
+          } else {
+            req.flash('errors', 'We have Already removed the game from your favorites, No need to do so again');
+            next();
+          }
+          
+        }).catch(err => console.log(err));
+        req.flash('success', 'We most likely deleted the game you requested to do so');
+        res.redirect('/users/logged');
+    }
+  }).catch((err) => {
+    res.status(500).json({ message: 'Delete Game went awry' });
+  }).catch(err => console.log(err));
+
+})
+
+
+router.get('/add-game', (req, res) => {
+  req.flash('success', 'We think we work, maybe?');
+  res.render('main/addGameToDB');
+})
+
+router.post('/add-game', (req, res) => {
+  Game.findOne({ title: req.body.title }).then((foundGame) => {
+    console.log('I have found the game via the title', foundGame)
+    // console.log('current user in session logged in', req.user);
+
+    if(foundGame) {
+    
+      req.flash('errors', 'Sorry but we already have Game with this exact title you have inputted, please try another game');
+      return res.redirect('/users/logged');
+    
+    } else if (!foundGame) {
+      let newGame = new Game();
+      newGame.title = req.body.title;
+      newGame.description = req.body.description || '';
+      newGame.yearReleased = req.body.yearReleased || '';
+      newGame.playTime = req.body.playTime || '';
+      newGame.image = req.body.image || '';
+
+      newGame.save().then((game) => {
+        console.log(game)
+        req.flash('success', 'We have successfully add the game to our database');
+        res.redirect('/users/logged')
+      })
+    }
+  }
+      ).catch(err => console.log(err));
+    });
 
 module.exports = router;
